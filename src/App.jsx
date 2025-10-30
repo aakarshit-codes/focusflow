@@ -6,6 +6,7 @@ function App() {
   const [title, setTitle] = useState('')
   const addTask = useTaskStore((state) => state.addTasks)
   const tick = useTaskStore((state) => state.tick)
+  const fetchTasks = useTaskStore((state) => state.fetchTasks)
 
   const handleAdd = () => {
     if (title.trim()) {
@@ -15,9 +16,14 @@ function App() {
   }
 
   useEffect(() => {
+    const hasTasks = useTaskStore.getState().tasks.length > 0
+    if (!hasTasks) {
+      fetchTasks()
+    }
+
     const interval = setInterval(() => tick(), 1000)
     return () => clearInterval(interval)
-  }, [tick])
+  }, [tick, fetchTasks])
 
   return (
     <div className="p-8 max-w-lg mx-auto space-y-4">
